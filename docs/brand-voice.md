@@ -14,15 +14,15 @@ This app leans into the world of office and school supplies — the very thing i
 
 ## Color Palette
 
-| Token | Hex | Usage |
-|---|---|---|
-| Banyan Navy | `#1B2B5E` | Navigation, headers, primary buttons, app name |
-| Banyan Sky | `#4A90D9` | Accents, links, active states, focus rings |
-| Banyan Black | `#0F0F0F` | All body text, form input text |
-| Notebook Cream | `#FAFAF7` | Form background (notebook surface) |
-| Notebook Line | `#C5DCF5` | Ruled lines on the notebook background |
-| Notebook Margin | `#E8A0A0` | Left margin line on the notebook background |
-| Surface White | `#FFFFFF` | Cards, modals, manager dashboard panels |
+| Token           | Hex       | Usage                                          |
+| --------------- | --------- | ---------------------------------------------- |
+| Banyan Navy     | `#1B2B5E` | Navigation, headers, primary buttons, app name |
+| Banyan Sky      | `#4A90D9` | Accents, links, active states, focus rings     |
+| Banyan Black    | `#0F0F0F` | All body text, form input text                 |
+| Notebook Cream  | `#FAFAF7` | Form background (notebook surface)             |
+| Notebook Line   | `#C5DCF5` | Ruled lines on the notebook background         |
+| Notebook Margin | `#E8A0A0` | Left margin line on the notebook background    |
+| Surface White   | `#FFFFFF` | Cards, modals, manager dashboard panels        |
 
 ---
 
@@ -30,12 +30,12 @@ This app leans into the world of office and school supplies — the very thing i
 
 Each status gets a light background badge with a darker text color for contrast and readability. These must be immediately scannable at a glance.
 
-| Status | Badge Background | Badge Text | Background Hex | Text Hex |
-|---|---|---|---|---|
-| Pending | Amber | Dark Amber | `#FFF3CD` | `#92400E` |
-| Approved | Mint Green | Dark Green | `#C7F9CC` | `#14532D` |
-| Denied | Light Red | Dark Red | `#FEE2E2` | `#991B1B` |
-| Fulfilled | Light Blue | Dark Blue | `#BDE0FE` | `#1E3A5F` |
+| Status    | Badge Background | Badge Text | Background Hex | Text Hex  |
+| --------- | ---------------- | ---------- | -------------- | --------- |
+| Pending   | Amber            | Dark Amber | `#FFF3CD`      | `#92400E` |
+| Approved  | Mint Green       | Dark Green | `#C7F9CC`      | `#14532D` |
+| Denied    | Light Red        | Dark Red   | `#FEE2E2`      | `#991B1B` |
+| Fulfilled | Light Blue       | Dark Blue  | `#BDE0FE`      | `#1E3A5F` |
 
 > **Note:** The hex values Indigo selected for Approved and Fulfilled are used as badge backgrounds. Dark counterparts are added for text so each badge is readable on both white and cream surfaces.
 
@@ -45,18 +45,18 @@ Each status gets a light background badge with a darker text color for contrast 
 
 **Font Family:** Inter (loaded via `next/font/google` — built into Next.js, zero extra config)
 
-| Element | Tailwind Classes | Notes |
-|---|---|---|
-| App name / logo | `font-bold text-2xl tracking-tight` | Banyan Navy, uppercase or title case |
-| Page headings (h1) | `font-bold text-3xl` | Banyan Navy |
-| Section headings (h2) | `font-semibold text-xl` | Banyan Black |
-| Sub-headings (h3) | `font-semibold text-base` | Banyan Black |
-| Body text | `font-normal text-base leading-relaxed` | Banyan Black |
-| Form labels | `font-medium text-sm` | Banyan Black, normal case |
-| Form input text | `font-normal text-base` | Banyan Black |
-| Status badges | `font-semibold text-xs uppercase tracking-wide` | Colored per status table above |
-| Button text | `font-semibold text-sm` | White on Navy or Sky background |
-| Helper / caption text | `font-normal text-xs text-gray-500` | Secondary info, timestamps |
+| Element               | Tailwind Classes                                | Notes                                |
+| --------------------- | ----------------------------------------------- | ------------------------------------ |
+| App name / logo       | `font-bold text-2xl tracking-tight`             | Banyan Navy, uppercase or title case |
+| Page headings (h1)    | `font-bold text-3xl`                            | Banyan Navy                          |
+| Section headings (h2) | `font-semibold text-xl`                         | Banyan Black                         |
+| Sub-headings (h3)     | `font-semibold text-base`                       | Banyan Black                         |
+| Body text             | `font-normal text-base leading-relaxed`         | Banyan Black                         |
+| Form labels           | `font-medium text-sm`                           | Banyan Black, normal case            |
+| Form input text       | `font-normal text-base`                         | Banyan Black                         |
+| Status badges         | `font-semibold text-xs uppercase tracking-wide` | Colored per status table above       |
+| Button text           | `font-semibold text-sm`                         | White on Navy or Sky background      |
+| Helper / caption text | `font-normal text-xs text-gray-500`             | Secondary info, timestamps           |
 
 ---
 
@@ -65,9 +65,11 @@ Each status gets a light background badge with a darker text color for contrast 
 The notebook aesthetic is intentionally contained. It appears in one place — the employee request form — so it feels deliberate, not gimmicky. Every other surface stays clean and professional.
 
 ### Where it appears:
+
 - The background behind the employee request form card
 
 ### Where it does NOT appear:
+
 - The manager dashboard
 - Navigation / header
 - Login page
@@ -78,18 +80,9 @@ The notebook aesthetic is intentionally contained. It appears in one place — t
 ```css
 /* Notebook paper effect — apply to the form page wrapper */
 background-image:
-  repeating-linear-gradient(
-    transparent,
-    transparent 27px,
-    #C5DCF5 28px
-  ),
-  linear-gradient(
-    to right,
-    transparent 59px,
-    #E8A0A0 60px,
-    transparent 61px
-  );
-background-color: #FAFAF7;
+  repeating-linear-gradient(transparent, transparent 27px, #c5dcf5 28px),
+  linear-gradient(to right, transparent 59px, #e8a0a0 60px, transparent 61px);
+background-color: #fafaf7;
 ```
 
 > In Tailwind, this is added as a custom utility in `globals.css` or applied inline as a `style` prop on the form wrapper div. The form card itself sits on top with a white background and a subtle shadow — paper on paper.
@@ -100,15 +93,15 @@ background-color: #FAFAF7;
 
 The app speaks simply and directly. No jargon, no corporate filler. It respects both the employee who just needs to submit something quickly and the manager who needs to act without reading a paragraph.
 
-| Context | Copy |
-|---|---|
-| Empty state (employee) | "You haven't submitted any requests yet." |
-| Empty state (manager) | "No requests have been submitted yet." |
-| Form success | "Your request has been submitted." |
-| Status update success | "Request updated." |
-| Validation error | "This field is required." / "Quantity must be at least 1." |
-| Access denied | "You don't have permission to view this page." |
-| Button labels | Imperative, lowercase: `submit request` · `approve` · `deny` · `mark as fulfilled` |
+| Context                | Copy                                                                               |
+| ---------------------- | ---------------------------------------------------------------------------------- |
+| Empty state (employee) | "You haven't submitted any requests yet."                                          |
+| Empty state (manager)  | "No requests have been submitted yet."                                             |
+| Form success           | "Your request has been submitted."                                                 |
+| Status update success  | "Request updated."                                                                 |
+| Validation error       | "This field is required." / "Quantity must be at least 1."                         |
+| Access denied          | "You don't have permission to view this page."                                     |
+| Button labels          | Imperative, lowercase: `submit request` · `approve` · `deny` · `mark as fulfilled` |
 
 ---
 
