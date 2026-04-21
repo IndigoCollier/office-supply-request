@@ -1,7 +1,7 @@
 # Office Supply Request System
 
 > **Status:** In Development  
-> **Author:** [Your Name]  
+> **Author:** Indigo Collier 
 > **Demo Date:** April 27, 2026
 
 An internal tool for employees to submit office supply requests and for managers to review and act on them — replacing the current process of Slack messages and emails that leave no paper trail.
@@ -31,7 +31,7 @@ An internal tool for employees to submit office supply requests and for managers
 ### 1. Clone the repo
 
 ```bash
-git clone [repo-url]
+git clone https://github.com/IndigoCollier/office-supply-request
 cd office-supply-request
 ```
 
