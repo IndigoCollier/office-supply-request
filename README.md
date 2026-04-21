@@ -1,22 +1,22 @@
 # Office Supply Request System
 
 > **Status:** In Development  
-> **Author:** Indigo Collier 
+> **Author:** Indigo Collier
 > **Demo Date:** April 27, 2026
 
-An internal tool for employees to submit office supply requests and for managers to review and act on them — replacing the current process of Slack messages and emails that leave no paper trail.
+This is a Full-stack internal tool for submitting and managing office supply requests — built with Next.js, TypeScript, and Firebase.
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | Next.js 14 (App Router), TypeScript, Tailwind CSS, shadcn/ui |
-| Backend | Next.js API Routes |
-| Database | Firebase Firestore |
-| Auth | Firebase Authentication |
-| Deployment | Vercel |
+| Layer      | Technology                                                   |
+| ---------- | ------------------------------------------------------------ |
+| Frontend   | Next.js 14 (App Router), TypeScript, Tailwind CSS, shadcn/ui |
+| Backend    | Next.js API Routes                                           |
+| Database   | Firebase Firestore                                           |
+| Auth       | Firebase Authentication                                      |
+| Deployment | Vercel                                                       |
 
 ---
 
@@ -61,14 +61,14 @@ The app runs at `http://localhost:3000`.
 
 ## Environment Variables
 
-| Variable | Description |
-|---|---|
-| `NEXT_PUBLIC_FIREBASE_API_KEY` | Firebase project API key |
-| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | Firebase Auth domain |
-| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | Firebase project ID |
-| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` | Firebase Storage bucket |
+| Variable                                   | Description                  |
+| ------------------------------------------ | ---------------------------- |
+| `NEXT_PUBLIC_FIREBASE_API_KEY`             | Firebase project API key     |
+| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`         | Firebase Auth domain         |
+| `NEXT_PUBLIC_FIREBASE_PROJECT_ID`          | Firebase project ID          |
+| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`      | Firebase Storage bucket      |
 | `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Firebase messaging sender ID |
-| `NEXT_PUBLIC_FIREBASE_APP_ID` | Firebase app ID |
+| `NEXT_PUBLIC_FIREBASE_APP_ID`              | Firebase app ID              |
 
 ---
 
@@ -76,10 +76,10 @@ The app runs at `http://localhost:3000`.
 
 Two pre-seeded accounts are available for local development and demo:
 
-| Role | Email | Password |
-|---|---|---|
+| Role     | Email             | Password          |
+| -------- | ----------------- | ----------------- |
 | Employee | employee@test.com | [set in Firebase] |
-| Manager | manager@test.com | [set in Firebase] |
+| Manager  | manager@test.com  | [set in Firebase] |
 
 ---
 
