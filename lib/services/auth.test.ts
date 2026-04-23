@@ -59,7 +59,7 @@ describe('signInWithEmail', () => {
     )
   })
 
-  it('returns idToken and profile on success', async () => {
+  it('returns idToken, profile, and uid on success', async () => {
     vi.mocked(signInWithEmailAndPassword).mockResolvedValue(
       mockCredential as unknown as Awaited<
         ReturnType<typeof signInWithEmailAndPassword>
@@ -71,6 +71,7 @@ describe('signInWithEmail', () => {
 
     expect(result.idToken).toBe('id-token-abc')
     expect(result.profile).toEqual(mockProfile)
+    expect(result.uid).toBe('user-123')
   })
 
   it('returns null profile when user has no Firestore record', async () => {

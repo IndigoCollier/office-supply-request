@@ -10,11 +10,11 @@ import type { UserProfile } from '@/lib/models/user'
 export async function signInWithEmail(
   email: string,
   password: string
-): Promise<{ idToken: string; profile: UserProfile | null }> {
+): Promise<{ idToken: string; profile: UserProfile | null; uid: string }> {
   const credential = await signInWithEmailAndPassword(auth, email, password)
   const idToken = await credential.user.getIdToken()
   const profile = await getUserProfile(credential.user.uid)
-  return { idToken, profile }
+  return { idToken, profile, uid: credential.user.uid }
 }
 
 export async function signUpWithEmail(

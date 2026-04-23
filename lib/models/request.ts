@@ -34,6 +34,8 @@ export const requestFormSchema = z.object({
 })
 
 export type RequestFormValues = z.infer<typeof requestFormSchema>
+// Input type reflects raw form field values before Zod coerces quantity to a number
+export type RequestFormInput = z.input<typeof requestFormSchema>
 
 // Zod schema — validates the status update payload from the manager
 export const statusUpdateSchema = z.object({
