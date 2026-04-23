@@ -1,9 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/lib/hooks/useAuth'
-import { signOutUser } from '@/lib/services/auth'
 import type { SupplyRequest, RequestStatus } from '@/lib/models/request'
 
 const STATUS_STYLES: Record<RequestStatus, string> = {
@@ -30,8 +27,6 @@ const ACTION_LABELS: Record<RequestStatus, string> = {
 }
 
 export default function ManagerDashboard() {
-  const router = useRouter()
-  const { userProfile } = useAuth()
   const [requests, setRequests] = useState<SupplyRequest[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [fetchError, setFetchError] = useState<string | null>(null)
@@ -98,30 +93,17 @@ export default function ManagerDashboard() {
     }
   }
 
-  async function handleSignOut() {
-    await signOutUser()
-    await fetch('/api/auth/session', { method: 'DELETE' })
-    router.replace('/login')
-  }
-
   return (
     <div className="min-h-screen bg-[#EEF1F8] px-6 py-10">
       <div className="mx-auto max-w-[720px]">
-        {/* Header */}
-        <div className="mb-8 flex items-start justify-between">
-          <div>
-            <h1 className="text-[22px] font-bold text-[#1B2B5E]">
-              Manager Dashboard
-              {userProfile?.displayName ? ` — ${userProfile.displayName}` : ''}
-            </h1>
-            <p className="mt-1 text-[13px] text-[#999]">All Supply Requests</p>
-          </div>
-          <button
-            onClick={handleSignOut}
-            className="text-[13px] font-medium text-[#999] hover:text-[#1B2B5E]"
-          >
-            Sign out
-          </button>
+        {/* Page title */}
+        <div className="mb-8">
+          <h1 className="text-[24px] font-bold text-[#1B2B5E]">
+            Request Queue
+          </h1>
+          <p className="mt-1 text-[14px] text-[#777]">
+            Review and act on all submitted supply requests.
+          </p>
         </div>
 
         {/* Action error */}
