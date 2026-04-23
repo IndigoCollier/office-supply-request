@@ -2,22 +2,31 @@ import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { requestFormSchema } from '@/lib/models/request'
 import { getUserProfile } from '@/lib/repositories/users'
-import { submitRequest, fetchEmployeeRequests } from '@/lib/services/requests'
+import {
+  submitRequest,
+  fetchEmployeeRequests,
+  fetchAllRequests,
+} from '@/lib/services/requests'
 
 export async function GET() {
   const cookieStore = await cookies()
-  const employeeId = cookieStore.get('__uid')?.value
+  const uid = cookieStore.get('__uid')?.value
+  const role = cookieStore.get('__role')?.value
 
-  if (!employeeId) {
+  if (!uid) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   try {
-    const requests = await fetchEmployeeRequests(employeeId)
+    const requests =
+      role === 'manager'
+        ? await fetchAllRequests()
+        : await fetchEmployeeRequests(uid)
     return NextResponse.json({ requests })
   } catch (err) {
     console.error('[GET /api/requests] failed to fetch requests', {
-      employeeId,
+      uid,
+      role,
       err,
     })
     return NextResponse.json(

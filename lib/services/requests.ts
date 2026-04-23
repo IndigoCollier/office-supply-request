@@ -1,8 +1,14 @@
 import {
   createRequest,
   getRequestsByEmployee,
+  getAllRequests,
+  updateRequestStatus,
 } from '@/lib/repositories/requests'
-import type { RequestFormValues, SupplyRequest } from '@/lib/models/request'
+import type {
+  RequestFormValues,
+  StatusUpdateValues,
+  SupplyRequest,
+} from '@/lib/models/request'
 
 export async function submitRequest(
   employeeId: string,
@@ -27,4 +33,23 @@ export async function fetchEmployeeRequests(
   employeeId: string
 ): Promise<SupplyRequest[]> {
   return getRequestsByEmployee(employeeId)
+}
+
+export async function fetchAllRequests(): Promise<SupplyRequest[]> {
+  return getAllRequests()
+}
+
+export async function updateStatus(
+  requestId: string,
+  values: StatusUpdateValues
+): Promise<void> {
+  const updates: { status: string; updatedAt: string; denialNote?: string } = {
+    status: values.status,
+    updatedAt: new Date().toISOString(),
+  }
+  // Only write denialNote when the request is denied — clear it otherwise
+  if (values.status === 'denied' && values.denialNote) {
+    updates.denialNote = values.denialNote
+  }
+  return updateRequestStatus(requestId, updates)
 }

@@ -1,14 +1,23 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { submitRequest, fetchEmployeeRequests } from './requests'
+import {
+  submitRequest,
+  fetchEmployeeRequests,
+  fetchAllRequests,
+  updateStatus,
+} from './requests'
 
 vi.mock('@/lib/repositories/requests', () => ({
   createRequest: vi.fn(),
   getRequestsByEmployee: vi.fn(),
+  getAllRequests: vi.fn(),
+  updateRequestStatus: vi.fn(),
 }))
 
 import {
   createRequest,
   getRequestsByEmployee,
+  getAllRequests,
+  updateRequestStatus,
 } from '@/lib/repositories/requests'
 
 const EMPLOYEE_ID = 'user-123'
@@ -141,5 +150,90 @@ describe('fetchEmployeeRequests', () => {
     await expect(fetchEmployeeRequests(EMPLOYEE_ID)).rejects.toThrow(
       'firestore/unavailable'
     )
+  })
+})
+
+describe('fetchAllRequests', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns all requests from the repository', async () => {
+    vi.mocked(getAllRequests).mockResolvedValue(mockRequests)
+
+    const result = await fetchAllRequests()
+
+    expect(result).toEqual(mockRequests)
+  })
+
+  it('returns an empty array when there are no requests', async () => {
+    vi.mocked(getAllRequests).mockResolvedValue([])
+
+    const result = await fetchAllRequests()
+
+    expect(result).toEqual([])
+  })
+
+  it('propagates repository errors to the caller', async () => {
+    vi.mocked(getAllRequests).mockRejectedValue(
+      new Error('firestore/unavailable')
+    )
+
+    await expect(fetchAllRequests()).rejects.toThrow('firestore/unavailable')
+  })
+})
+
+describe('updateStatus', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.mocked(updateRequestStatus).mockResolvedValue(undefined)
+  })
+
+  it('calls updateRequestStatus with the request id and approved status', async () => {
+    await updateStatus('req-abc', { status: 'approved' })
+
+    expect(updateRequestStatus).toHaveBeenCalledWith(
+      'req-abc',
+      expect.objectContaining({ status: 'approved' })
+    )
+  })
+
+  it('includes a denialNote when status is denied and note is provided', async () => {
+    await updateStatus('req-abc', {
+      status: 'denied',
+      denialNote: 'Over budget',
+    })
+
+    expect(updateRequestStatus).toHaveBeenCalledWith(
+      'req-abc',
+      expect.objectContaining({ status: 'denied', denialNote: 'Over budget' })
+    )
+  })
+
+  it('does not include denialNote when status is approved', async () => {
+    await updateStatus('req-abc', {
+      status: 'approved',
+      denialNote: 'should be ignored',
+    })
+
+    const call = vi.mocked(updateRequestStatus).mock.calls[0][1]
+    expect(call).not.toHaveProperty('denialNote')
+  })
+
+  it('sets updatedAt to a valid ISO timestamp', async () => {
+    await updateStatus('req-abc', { status: 'fulfilled' })
+
+    const call = vi.mocked(updateRequestStatus).mock.calls[0][1]
+    expect(() => new Date(call.updatedAt)).not.toThrow()
+  })
+
+  it('propagates repository errors to the caller', async () => {
+    vi.mocked(updateRequestStatus).mockRejectedValue(
+      new Error('firestore/unavailable')
+    )
+
+    await expect(
+      updateStatus('req-abc', { status: 'approved' })
+    ).rejects.toThrow('firestore/unavailable')
   })
 })
