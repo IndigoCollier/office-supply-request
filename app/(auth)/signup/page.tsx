@@ -33,7 +33,11 @@ export default function SignUpPage() {
       await fetch('/api/auth/session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: idToken, role: profile.role }),
+        body: JSON.stringify({
+          token: idToken,
+          role: profile.role,
+          uid: profile.uid,
+        }),
       })
 
       // Full page load so middleware sees the session cookie on a fresh request.

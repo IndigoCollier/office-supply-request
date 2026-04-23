@@ -38,7 +38,7 @@ export default function LoginPage() {
   async function onSubmit(values: LoginFormValues) {
     setAuthError(null)
     try {
-      const { idToken, profile } = await signInWithEmail(
+      const { idToken, profile, uid } = await signInWithEmail(
         values.email,
         values.password
       )
@@ -49,6 +49,7 @@ export default function LoginPage() {
         body: JSON.stringify({
           token: idToken,
           role: profile?.role ?? 'employee',
+          uid,
         }),
       })
 
