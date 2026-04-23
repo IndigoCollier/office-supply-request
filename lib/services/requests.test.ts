@@ -1,11 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { submitRequest } from './requests'
+import { submitRequest, fetchEmployeeRequests } from './requests'
 
 vi.mock('@/lib/repositories/requests', () => ({
   createRequest: vi.fn(),
+  getRequestsByEmployee: vi.fn(),
 }))
 
-import { createRequest } from '@/lib/repositories/requests'
+import {
+  createRequest,
+  getRequestsByEmployee,
+} from '@/lib/repositories/requests'
 
 const EMPLOYEE_ID = 'user-123'
 const EMPLOYEE_EMAIL = 'employee@test.com'
@@ -83,5 +87,59 @@ describe('submitRequest', () => {
     await expect(
       submitRequest(EMPLOYEE_ID, EMPLOYEE_EMAIL, FORM_VALUES)
     ).rejects.toThrow('firestore/unavailable')
+  })
+})
+
+const mockRequests = [
+  {
+    id: 'req-abc',
+    employeeId: EMPLOYEE_ID,
+    employeeEmail: EMPLOYEE_EMAIL,
+    item: 'Sticky notes',
+    quantity: 3,
+    reason: 'Running low on supply',
+    status: 'pending' as const,
+    createdAt: '2026-04-22T00:00:00.000Z',
+    updatedAt: '2026-04-22T00:00:00.000Z',
+  },
+]
+
+describe('fetchEmployeeRequests', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns the requests from the repository', async () => {
+    vi.mocked(getRequestsByEmployee).mockResolvedValue(mockRequests)
+
+    const result = await fetchEmployeeRequests(EMPLOYEE_ID)
+
+    expect(result).toEqual(mockRequests)
+  })
+
+  it('calls getRequestsByEmployee with the correct employeeId', async () => {
+    vi.mocked(getRequestsByEmployee).mockResolvedValue([])
+
+    await fetchEmployeeRequests(EMPLOYEE_ID)
+
+    expect(getRequestsByEmployee).toHaveBeenCalledWith(EMPLOYEE_ID)
+  })
+
+  it('returns an empty array when the employee has no requests', async () => {
+    vi.mocked(getRequestsByEmployee).mockResolvedValue([])
+
+    const result = await fetchEmployeeRequests(EMPLOYEE_ID)
+
+    expect(result).toEqual([])
+  })
+
+  it('propagates repository errors to the caller', async () => {
+    vi.mocked(getRequestsByEmployee).mockRejectedValue(
+      new Error('firestore/unavailable')
+    )
+
+    await expect(fetchEmployeeRequests(EMPLOYEE_ID)).rejects.toThrow(
+      'firestore/unavailable'
+    )
   })
 })

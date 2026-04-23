@@ -1,4 +1,7 @@
-import { createRequest } from '@/lib/repositories/requests'
+import {
+  createRequest,
+  getRequestsByEmployee,
+} from '@/lib/repositories/requests'
 import type { RequestFormValues, SupplyRequest } from '@/lib/models/request'
 
 export async function submitRequest(
@@ -18,4 +21,10 @@ export async function submitRequest(
     updatedAt: now,
   }
   return createRequest(request)
+}
+
+export async function fetchEmployeeRequests(
+  employeeId: string
+): Promise<SupplyRequest[]> {
+  return getRequestsByEmployee(employeeId)
 }
