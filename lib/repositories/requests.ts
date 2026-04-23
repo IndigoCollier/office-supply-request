@@ -1,4 +1,12 @@
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore'
+import {
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+} from 'firebase/firestore'
 import { db } from '@/lib/firebase/config'
 import type { SupplyRequest } from '@/lib/models/request'
 
@@ -17,7 +25,17 @@ export async function getRequestsByEmployee(
     where('employeeId', '==', employeeId)
   )
   const snap = await getDocs(q)
-  return snap.docs.map(
-    (doc) => ({ id: doc.id, ...doc.data() }) as SupplyRequest
-  )
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }) as SupplyRequest)
+}
+
+export async function getAllRequests(): Promise<SupplyRequest[]> {
+  const snap = await getDocs(collection(db, 'requests'))
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }) as SupplyRequest)
+}
+
+export async function updateRequestStatus(
+  requestId: string,
+  updates: { status: string; updatedAt: string; denialNote?: string }
+): Promise<void> {
+  await updateDoc(doc(db, 'requests', requestId), updates)
 }

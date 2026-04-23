@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { createRequest, getRequestsByEmployee } from './requests'
+import {
+  createRequest,
+  getRequestsByEmployee,
+  getAllRequests,
+  updateRequestStatus,
+} from './requests'
 
 vi.mock('firebase/firestore', () => ({
   collection: vi.fn(),
@@ -7,13 +12,23 @@ vi.mock('firebase/firestore', () => ({
   query: vi.fn(),
   where: vi.fn(),
   getDocs: vi.fn(),
+  doc: vi.fn(),
+  updateDoc: vi.fn(),
 }))
 
 vi.mock('@/lib/firebase/config', () => ({
   db: {},
 }))
 
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore'
+import {
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+} from 'firebase/firestore'
 
 const mockRequest = {
   employeeId: 'user-123',
@@ -128,5 +143,103 @@ describe('getRequestsByEmployee', () => {
     await expect(getRequestsByEmployee('user-123')).rejects.toThrow(
       'firestore/unavailable'
     )
+  })
+})
+
+describe('getAllRequests', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.mocked(collection).mockReturnValue(
+      'mock-collection-ref' as unknown as ReturnType<typeof collection>
+    )
+  })
+
+  it('returns an empty array when there are no documents', async () => {
+    vi.mocked(getDocs).mockResolvedValue({
+      docs: [],
+    } as unknown as Awaited<ReturnType<typeof getDocs>>)
+
+    const result = await getAllRequests()
+
+    expect(result).toEqual([])
+  })
+
+  it('returns all documents mapped with their id', async () => {
+    vi.mocked(getDocs).mockResolvedValue({
+      docs: [
+        { id: 'req-abc', data: () => ({ ...mockRequest }) },
+        { id: 'req-def', data: () => ({ ...mockRequest, item: 'Pens' }) },
+      ],
+    } as unknown as Awaited<ReturnType<typeof getDocs>>)
+
+    const result = await getAllRequests()
+
+    expect(result).toHaveLength(2)
+    expect(result[0]).toEqual({ id: 'req-abc', ...mockRequest })
+    expect(result[1]).toEqual({ id: 'req-def', ...mockRequest, item: 'Pens' })
+  })
+
+  it('queries the requests collection', async () => {
+    vi.mocked(getDocs).mockResolvedValue({
+      docs: [],
+    } as unknown as Awaited<ReturnType<typeof getDocs>>)
+
+    await getAllRequests()
+
+    expect(collection).toHaveBeenCalledWith({}, 'requests')
+  })
+
+  it('propagates Firestore errors to the caller', async () => {
+    vi.mocked(getDocs).mockRejectedValue(new Error('firestore/unavailable'))
+
+    await expect(getAllRequests()).rejects.toThrow('firestore/unavailable')
+  })
+})
+
+describe('updateRequestStatus', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.mocked(doc).mockReturnValue(
+      'mock-doc-ref' as unknown as ReturnType<typeof doc>
+    )
+    vi.mocked(updateDoc).mockResolvedValue(undefined)
+  })
+
+  it('calls updateDoc with the correct document reference', async () => {
+    await updateRequestStatus('req-abc', {
+      status: 'approved',
+      updatedAt: '2026-04-22T00:00:00.000Z',
+    })
+
+    expect(doc).toHaveBeenCalledWith({}, 'requests', 'req-abc')
+    expect(updateDoc).toHaveBeenCalledWith('mock-doc-ref', {
+      status: 'approved',
+      updatedAt: '2026-04-22T00:00:00.000Z',
+    })
+  })
+
+  it('includes denialNote when provided', async () => {
+    await updateRequestStatus('req-abc', {
+      status: 'denied',
+      updatedAt: '2026-04-22T00:00:00.000Z',
+      denialNote: 'Over budget',
+    })
+
+    expect(updateDoc).toHaveBeenCalledWith('mock-doc-ref', {
+      status: 'denied',
+      updatedAt: '2026-04-22T00:00:00.000Z',
+      denialNote: 'Over budget',
+    })
+  })
+
+  it('propagates Firestore errors to the caller', async () => {
+    vi.mocked(updateDoc).mockRejectedValue(new Error('firestore/unavailable'))
+
+    await expect(
+      updateRequestStatus('req-abc', {
+        status: 'approved',
+        updatedAt: '2026-04-22T00:00:00.000Z',
+      })
+    ).rejects.toThrow('firestore/unavailable')
   })
 })

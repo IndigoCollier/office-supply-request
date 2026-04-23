@@ -12,16 +12,23 @@ vi.mock('@/lib/repositories/users', () => ({
 vi.mock('@/lib/services/requests', () => ({
   submitRequest: vi.fn(),
   fetchEmployeeRequests: vi.fn(),
+  fetchAllRequests: vi.fn(),
 }))
 
 import { cookies } from 'next/headers'
 import { getUserProfile } from '@/lib/repositories/users'
-import { submitRequest, fetchEmployeeRequests } from '@/lib/services/requests'
+import {
+  submitRequest,
+  fetchEmployeeRequests,
+  fetchAllRequests,
+} from '@/lib/services/requests'
 
-const mockCookieStore = (uid: string | undefined) => ({
-  get: vi.fn((name: string) =>
-    name === '__uid' && uid ? { value: uid } : undefined
-  ),
+const mockCookieStore = (uid: string | undefined, role?: string) => ({
+  get: vi.fn((name: string) => {
+    if (name === '__uid' && uid) return { value: uid }
+    if (name === '__role' && role) return { value: role }
+    return undefined
+  }),
 })
 
 const mockProfile = {
@@ -117,6 +124,37 @@ describe('GET /api/requests', () => {
     const res = await GET()
 
     expect(res.status).toBe(500)
+  })
+
+  it('calls fetchAllRequests when role is manager', async () => {
+    vi.mocked(cookies).mockResolvedValue(
+      mockCookieStore('mgr-123', 'manager') as unknown as Awaited<
+        ReturnType<typeof cookies>
+      >
+    )
+    vi.mocked(fetchAllRequests).mockResolvedValue(mockRequests)
+
+    const res = await GET()
+    const data = await res.json()
+
+    expect(fetchAllRequests).toHaveBeenCalled()
+    expect(fetchEmployeeRequests).not.toHaveBeenCalled()
+    expect(res.status).toBe(200)
+    expect(data.requests).toEqual(mockRequests)
+  })
+
+  it('calls fetchEmployeeRequests when role is employee', async () => {
+    vi.mocked(cookies).mockResolvedValue(
+      mockCookieStore('user-123', 'employee') as unknown as Awaited<
+        ReturnType<typeof cookies>
+      >
+    )
+    vi.mocked(fetchEmployeeRequests).mockResolvedValue(mockRequests)
+
+    await GET()
+
+    expect(fetchEmployeeRequests).toHaveBeenCalledWith('user-123')
+    expect(fetchAllRequests).not.toHaveBeenCalled()
   })
 })
 
