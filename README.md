@@ -1,10 +1,12 @@
 # Office Supply Request System
 
-> **Status:** In Development  
-> **Author:** Indigo Collier
+> **Status:** Deployed  
+> **Author:** Indigo Collier  
 > **Demo Date:** April 27, 2026
 
-This is a Full-stack internal tool for submitting and managing office supply requests — built with Next.js, TypeScript, and Firebase.
+A full-stack internal tool for submitting and managing office supply requests — built with Next.js, TypeScript, and Firebase.
+
+**Live URL:** https://office-supply-request.vercel.app
 
 ---
 
@@ -24,8 +26,8 @@ This is a Full-stack internal tool for submitting and managing office supply req
 
 ### Prerequisites
 
-- Node.js 18+
-- A Firebase project with Auth and Firestore enabled
+- Node.js 22+
+- A Firebase project with Authentication and Firestore enabled
 - A Vercel account (for deployment)
 
 ### 1. Clone the repo
@@ -74,12 +76,12 @@ The app runs at `http://localhost:3000`.
 
 ## Test Accounts
 
-Two pre-seeded accounts are available for local development and demo:
+Two accounts are available for testing and demo:
 
-| Role     | Email             | Password          |
-| -------- | ----------------- | ----------------- |
-| Employee | employee@test.com | [set in Firebase] |
-| Manager  | manager@test.com  | [set in Firebase] |
+| Role     | Email             | Password   |
+| -------- | ----------------- | ---------- |
+| Employee | employee@test.com | TestPass1! |
+| Manager  | manager@test.com  | TestPass1! |
 
 ---
 
@@ -87,11 +89,11 @@ Two pre-seeded accounts are available for local development and demo:
 
 ```
 office-supply-request/
-├── app/                    # Next.js App Router — pages and API routes
-│   ├── api/                # API route handlers (thin — validation + service calls only)
-│   ├── dashboard/          # Employee dashboard
-│   ├── manager/            # Manager dashboard (role-protected)
-│   └── login/              # Auth page
+├── app/
+│   ├── (auth)/             # Login and signup pages
+│   ├── api/                # API route handlers (validation + service calls only)
+│   ├── employee/           # Employee dashboard and request form
+│   └── manager/            # Manager dashboard (role-protected)
 ├── components/             # Reusable UI components
 ├── lib/
 │   ├── services/           # Business logic
@@ -106,7 +108,7 @@ office-supply-request/
 
 ## Architecture
 
-See `docs/architecture.drawio` for the full system diagram showing Client, Middleware, and Database layers with data flow.
+See `docs/architecture.drawio.png` for the full system diagram showing Client, Middleware, and Database layers with data flow.
 
 ---
 
@@ -128,8 +130,10 @@ npm run format      # Format with Prettier
 
 ---
 
-## Deployment
+## Deploying to Vercel
 
-This app is deployed to Vercel. Every push to `main` triggers an automatic production deployment via GitHub Actions CI.
-
-Live URL: [add after first deploy]
+1. Push your branch to GitHub
+2. Go to [vercel.com](https://vercel.com) and import the repository
+3. Add all environment variables from `.env.example` under Project Settings → Environment Variables
+4. After the first deploy, add your `.vercel.app` URL to Firebase Console → Authentication → Settings → Authorized Domains
+5. Vercel will automatically redeploy on every push to the connected branch
